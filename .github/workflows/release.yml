@@ -1,0 +1,60 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run check
+      - name: Read package version
+        id: package
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Generate release notes
+        run: |
+          VERSION="${{ steps.package.outputs.version }}"
+          if ! git rev-parse --verify "refs/tags/$VERSION" >/dev/null 2>&1; then
+            git tag "$VERSION" "$GITHUB_SHA"
+          fi
+          CHANGELOG_OUTPUT=$(npm run --silent changelog -- --stdout)
+          NOTES=$(printf '%s\n' "$CHANGELOG_OUTPUT" | awk -v version="$VERSION" '
+            index($0, "lopswap-sdk/" version " (") == 1 { print; found=1; next }
+            index($0, "lopswap-sdk/") == 1 && found { exit }
+            found { print }
+          ')
+
+          if [ -z "$NOTES" ]; then
+            echo "No changelog entry found for version $VERSION"
+            exit 1
+          fi
+
+          printf '%s\n' "$NOTES" > release-notes.md
+      - name: Create GitHub release
+        run: |
+          gh release create "${{ steps.package.outputs.version }}" \
+            --title "Release ${{ steps.package.outputs.version }}" \
+            --target "$GITHUB_SHA" \
+            --notes-file release-notes.md \
+            --fail-on-no-commits
+        env:
+          GH_TOKEN: ${{ github.token }}

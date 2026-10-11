@@ -1,0 +1,63 @@
+{
+  "name": "@lopswap/sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for creating and managing LopSwap pools",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "docs",
+    "examples"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "changelog": "auto-changelog",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:coverage",
+    "docgen": "typedoc --options typedoc.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "prepack": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LopSwap/lopswap-sdk.git"
+  },
+  "auto-changelog": {
+    "output": "CHANGELOG.md",
+    "template": "./changelog/changelog-template.hbs",
+    "commitLimit": 0
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "viem": ">=2.0.0 <3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^5.0.3",
+    "auto-changelog": "2.7.0",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "typedoc": "0.28.20",
+    "typedoc-plugin-markdown": "4.13.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "viem": "^2.57.4",
+    "vitest": "^5.0.3"
+  }
+}

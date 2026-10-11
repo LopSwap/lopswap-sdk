@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/typedoc-plugin-markdown/typedoc-plugin-markdown.schema.json",
+  "plugin": ["typedoc-plugin-markdown", "./scripts/typedoc-theme.mjs"],
+  "theme": "lopswap",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.json",
+  "out": "docs",
+  "entryFileName": "SDK",
+  "readme": "none",
+  "router": "lopswap",
+  "cleanOutputDir": true,
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "disableSources": true,
+  "hideGenerator": true,
+  "hidePageHeader": true,
+  "groupOrder": [
+    "Pool creation",
+    "Discovery",
+    "Onchain reads",
+    "Transactions",
+    "*",
+    "Methods"
+  ],
+  "useCodeBlocks": true,
+  "formatWithPrettier": true,
+  "expandParameters": false,
+  "parametersFormat": "list",
+  "interfacePropertiesFormat": "table",
+  "typeAliasPropertiesFormat": "table"
+}
